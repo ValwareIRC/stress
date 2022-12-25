@@ -51,7 +51,7 @@ class Client {
 			'sid' => Conf::$settings['info']['SID'],
 			'ipb64' => "",
 			'gecos' => $gecos);
-		hook::run("UID", $array);
+		//hook::run("UID", $array);
 		self::add_to_client_list($this);
 
 		if (isset(Conf::$settings['log']['channel'])) {

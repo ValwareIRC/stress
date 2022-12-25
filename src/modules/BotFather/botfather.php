@@ -10,9 +10,9 @@
 //				
 \\				
 //				
-\\	Title: BugServ
+\\	Title: BotFather
 //	
-\\	Desc: BugServ for BugServ stuff lmao
+\\	Desc: BotFather for botfather stuff lmao
 //	
 \\	
 //	
@@ -21,16 +21,15 @@
 \\	Author:	Valware
 //				
 */
-include("bugserv.conf");
-class BugServ {
+include("botfather.conf");
+class botfather {
 
 	/* Module handle */
 	/* $name needs to be the same name as the class and file lol */
-	public $name = "BugServ";
-	public $description = "BugServ PseudoClient";
+	public $name = "botfather";
+	public $description = "BotFather PseudoClient";
 	public $author = "Valware";
 	public $version = "1.0";
-	public $official = true;
 
 	/* To run when this class is created/when the module is loaded */
 	/* Construction: Here's where you'll wanna initialise any globals or databases or anything */
@@ -43,38 +42,34 @@ class BugServ {
 	/* Destruction: Here's where to clear up your globals or databases or anything */
 	function __destruct()
 	{
-		global $BugServ;
-		$bbs = Client::find($BugServ['nick']);
-		$bbs->quit();
+		global $bf;
+		$tbf = Client::find($bf['nick']);
+		if ($tbf)
+			$tbf->quit();
 	}
 
 
 	function __init()
 	{
 
-		hook::func("connect", 'BugServ::spawn_client');
+		hook::func(HOOKTYPE_CONNECT, 'botfather::spawn_client');
 			
 		if (IsConnected())
-			if (!BugServ::spawn_client())
-				return false;
+			if (!botfather::spawn_client())
+				return true;
 
-		include "modules.conf";
 		return true;
 	}
 
 	static function spawn_client()
 	{
-		global $BugServ;
-		/* spawn client with $bbs
-		 * You don't need to store this anywhere as it's done automatically
-		 * You can find this client from anywhere by finding the global $BugServ:
-		 * $bgs = Client::find($BugServ['nick']);
-		 */
-		$bgs = new Client($BugServ['nick'],$BugServ['ident'],$BugServ['hostmask'],$BugServ['uid'],$BugServ['gecos'],'BugServ');
-		if (!$bgs)
+		global $bf;
+		SVSLog("Trying to spawn client...");
+		$tbf = new Client($bf['nick'],$bf['ident'],$bf['hostmask'],NULL,$bf['gecos'],'botfather');
+		if (!$tbf)
 			return false;
-		
-		$bgs->join("#dalek-support","#dalek-devel");
+		$tbf->join("#services");
+		$tbf->join(config_get_item("botfather::channel"));
 		return true;
 	}
 

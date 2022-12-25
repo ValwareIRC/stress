@@ -14,6 +14,7 @@ class Module
 	function __construct($mod)
 	{
 
+		$os = Client::find("OperServ");
 		/* We take care of that fam */
 		if (mb_substr($mod,-4) == ".php")
 		{
@@ -62,18 +63,25 @@ class Module
 		foreach (Module::$modules as $m)
 		{
 			if ($m->name == $modname)
+			{
+				SVSLog("Module already loaded");
 				return true;
-
+			}
 		}
 		include_once("$dir$mod.php");
 
 		/* Class not found */
 		$module = new $modname();
 		if (!$module->name)
+		{
+			SVSLog("Class not found");
 			return false;
-		
+		}
 		if ($module->name !== get_class($module))
+		{
+			SVSLog("Couldn't actually match class with module name for some reason");
 			return false;
+		}
 
 		/* Found the class, check its contents */		
 		else {
